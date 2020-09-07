@@ -1,9 +1,11 @@
 #! /bin/bash
-QUEST_STAMINA_COST=$1
+
+# TODO: Add help and parameter handling
 
 # get chromium window and resize
 WID=`xdotool search --name --desktop 0 chromium | head -n1`
 xdotool windowactivate $WID
+echo "resizing window to 900x700"
 xdotool windowsize --sync $WID 900 700
 sleep 2
 
@@ -19,14 +21,15 @@ while true; do
 	echo "starting the fight"
 	xdotool mousemove --sync --window $WID 217 281
 	xdotool click 1
-	sleep 1s
+	sleep 2s
 
 	# click fast foward button
 	echo "clicking fast foward button"
 	xdotool mousemove --sync --window $WID 387 136
 	xdotool click 1
-	echo "waiting 40 seconds"
-	sleep 40s
+	echo "waiting 35-43 seconds"
+	RANDOM_SECONDS="$(($RANDOM%9+35))"
+	sleep $RANDOM_SECONDS
 
 	# click to open chest
 	echo "clicking chest"
@@ -39,13 +42,16 @@ while true; do
 	echo "clicking next"
 	xdotool mousemove --sync --window $WID 422 501
 	xdotool click 1
-	sleep 5s
+	echo "waiting 20-40 seconds"
+	RANDOM_SECONDS="$(($RANDOM%21+20))"
+	sleep $RANDOM_SECONDS
 
 	# wait for stamina to recover
-	RANDOM_SECONDS="$(($RANDOM%40))"
-	SECONDS_TO_WAIT="$(($QUEST_STAMINA_COST * 300 + $RANDOM_SECONDS))"
-	echo waiting $SECONDS_TO_WAIT seconds for stamina to recover
-	sleep $SECONDS_TO_WAIT
+	if [[ $1 != "rush" ]]; then
+		SECONDS_TO_WAIT="$(($1 * 300))"
+		echo waiting $SECONDS_TO_WAIT seconds for stamina to recover
+		sleep $SECONDS_TO_WAIT
+	fi
 	echo "and again..."
 
 	#xdotool mousemove --sync --window $WID 422 501
